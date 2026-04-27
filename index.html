@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>方法论总结与订单分析</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --paper: #ffffff;
+      --ink: #20242a;
+      --muted: #667085;
+      --line: #d9dee7;
+      --accent: #0f766e;
+      --accent-soft: #e6f4f1;
+      --code-bg: #f1f4f8;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.72;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(220px, 300px) minmax(0, 880px);
+      gap: 32px;
+      width: min(1240px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 36px 0 56px;
+    }
+    aside {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow: auto;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.86);
+    }
+    .toc-title {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    aside a {
+      display: block;
+      padding: 7px 8px;
+      border-radius: 6px;
+      color: #344054;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    aside a:hover { background: var(--accent-soft); color: #075e58; }
+    .toc-level-3 { padding-left: 20px; color: var(--muted); }
+    main {
+      min-width: 0;
+      padding: 38px 52px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      box-shadow: 0 18px 48px rgba(27, 39, 54, 0.08);
+    }
+    h1, h2, h3 {
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+    h1 {
+      margin: 0 0 28px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--accent);
+      font-size: 34px;
+    }
+    h2 {
+      margin: 42px 0 16px;
+      padding-top: 8px;
+      font-size: 25px;
+    }
+    h3 {
+      margin: 28px 0 12px;
+      font-size: 19px;
+    }
+    p { margin: 12px 0; }
+    .step {
+      position: relative;
+      padding-left: 18px;
+    }
+    .step::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.82em;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    ul { margin: 10px 0 14px 24px; padding: 0; }
+    li { margin: 5px 0; }
+    code {
+      padding: 2px 6px;
+      border: 1px solid #d8dee9;
+      border-radius: 5px;
+      background: var(--code-bg);
+      color: #344054;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+    }
+    pre {
+      overflow: auto;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: #111827;
+      color: #eef2ff;
+    }
+    pre code {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+    }
+    blockquote {
+      margin: 20px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      color: #23423f;
+    }
+    blockquote p { margin: 0; }
+    hr {
+      margin: 34px 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+    }
+    strong { font-weight: 750; }
+    @media (max-width: 900px) {
+      .shell {
+        display: block;
+        width: min(100% - 28px, 880px);
+        padding: 18px 0 36px;
+      }
+      aside { position: static; margin-bottom: 16px; max-height: none; }
+      main { padding: 28px 22px; }
+      h1 { font-size: 28px; }
+      h2 { font-size: 22px; }
+    }
+    @media print {
+      body { background: #fff; }
+      .shell { display: block; width: 100%; padding: 0; }
+      aside { display: none; }
+      main { border: 0; box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside aria-label="目录">
+      <p class="toc-title">目录</p>
+      <a class="toc-level-1" href="#方法论总结与订单分析">方法论总结与订单分析</a>
+<a class="toc-level-2" href="#文档目标">文档目标</a>
+<a class="toc-level-2" href="#一-文章里的好方法论">一、文章里的好方法论</a>
+<a class="toc-level-3" href="#1-先跑最小闭环-不先写大而全-spec">1. 先跑最小闭环，不先写大而全 spec</a>
+<a class="toc-level-3" href="#2-让真实世界反馈驱动下一步-而不是让-ai-自己猜">2. 让真实世界反馈驱动下一步，而不是让 AI 自己猜</a>
+<a class="toc-level-3" href="#3-人的最高价值是-domain-routing">3. 人的最高价值是 domain routing</a>
+<a class="toc-level-3" href="#4-不要盲信单一系统-要做交叉验证">4. 不要盲信单一系统，要做交叉验证</a>
+<a class="toc-level-3" href="#5-先分清-症状-和-根因">5. 先分清“症状”和“根因”</a>
+<a class="toc-level-3" href="#6-每轮都要固化">6. 每轮都要固化</a>
+<a class="toc-level-3" href="#7-最终交付要能证明价值">7. 最终交付要能证明价值</a>
+<a class="toc-level-2" href="#二-把方法论映射到这次订单分析">二、把方法论映射到这次订单分析</a>
+<a class="toc-level-2" href="#三-订单-583235230444586009-分析">三、订单 583235230444586009 分析</a>
+<a class="toc-level-2" href="#1-查询口径">1. 查询口径</a>
+<a class="toc-level-2" href="#2-订单基础信息">2. 订单基础信息</a>
+<a class="toc-level-2" href="#3-ccr-侧看到的现象">3. CCR 侧看到的现象</a>
+<a class="toc-level-2" href="#4-物流包裹侧看到的事实">4. 物流包裹侧看到的事实</a>
+<a class="toc-level-2" href="#5-订单宽表状态补充">5. 订单宽表状态补充</a>
+<a class="toc-level-2" href="#6-时间线还原">6. 时间线还原</a>
+<a class="toc-level-3" href="#阶段-1-用户侧先感知-慢">阶段 1：用户侧先感知“慢”</a>
+<a class="toc-level-3" href="#阶段-2-物流事实落成-丢件">阶段 2：物流事实落成“丢件”</a>
+<a class="toc-level-3" href="#阶段-3-订单履约状态和包裹状态对齐">阶段 3：订单履约状态和包裹状态对齐</a>
+<a class="toc-level-2" href="#7-这单到底发生了什么">7. 这单到底发生了什么</a>
+<a class="toc-level-2" href="#8-根因判断">8. 根因判断</a>
+<a class="toc-level-3" href="#表面问题">表面问题</a>
+<a class="toc-level-3" href="#真实根因">真实根因</a>
+<a class="toc-level-3" href="#根因归属">根因归属</a>
+<a class="toc-level-2" href="#9-为什么-ccr-不是-package-lost">9. 为什么 CCR 不是 “Package Lost”</a>
+<a class="toc-level-2" href="#10-最终结论">10. 最终结论</a>
+<a class="toc-level-2" href="#四-从这次-case-能沉淀出的通用分析模板">四、从这次 case 能沉淀出的通用分析模板</a>
+<a class="toc-level-2" href="#五-下一步建议">五、下一步建议</a>
+    </aside>
+    <main>
+      <h1 id="方法论总结与订单分析">方法论总结与订单分析</h1>
+<h2 id="文档目标">文档目标</h2>
+<p>这份文档做两件事：</p>
+<ol>
+<li>总结《Tutorial: 如何用 Claude Code 从 0 搭出一个客服 case 调研工具》里值得复用的方法论。</li>
+<li>用这些方法论重新分析订单 <code>main_order_id = 583235230444586009</code> 的 CCR 问题，输出一份结构化 case report。</li>
+</ol>
+<hr>
+<h2 id="一-文章里的好方法论">一、文章里的好方法论</h2>
+<p>这篇文章最有价值的，不是某个具体脚本，而是怎么和 AI 协作，把一个模糊业务问题快速推进成可复用工具。</p>
+<h3 id="1-先跑最小闭环-不先写大而全-spec">1. 先跑最小闭环，不先写大而全 spec</h3>
+<ul>
+<li>起手应该是一个最小可执行动作，而不是完整方案设计。</li>
+<li>典型方式是：先查一个 case、先跑一段脚本、先抓一页页面、先拿一份报错。</li>
+<li>这样能尽快进入真实反馈回路，而不是在抽象层面空转。</li>
+</ul>
+<p>可迁移到订单分析里的做法：</p>
+<ul>
+<li>先查最新分区里这条单在 3 张表是否命中。</li>
+<li>再补字段，而不是一开始就写很长的 join SQL。</li>
+</ul>
+<h3 id="2-让真实世界反馈驱动下一步-而不是让-ai-自己猜">2. 让真实世界反馈驱动下一步，而不是让 AI 自己猜</h3>
+<ul>
+<li>文章反复强调 <code>reality-feedback loop</code>。</li>
+<li>Claude 最强的不是凭空想业务，而是根据真实 log、真实页面、真实数据不断纠偏。</li>
+<li>每轮都让事实推动下一轮问题，而不是让模型自我脑补。</li>
+</ul>
+<p>可迁移到订单分析里的做法：</p>
+<ul>
+<li>先确认分区字段。</li>
+<li>再确认最新分区。</li>
+<li>再确认订单在哪个国家分区命中。</li>
+<li>再顺着 <code>main_order_id -&gt; package_id -&gt; package_status</code> 串证据。</li>
+</ul>
+<h3 id="3-人的最高价值是-domain-routing">3. 人的最高价值是 domain routing</h3>
+<ul>
+<li>人最有价值的输入，往往不是“怎么写代码”。</li>
+<li>而是告诉 AI：</li>
+<ul>
+<li>这类 ID 应该去哪个系统查</li>
+<li>这个字段应该怎么限定</li>
+<li>这个表查询时必须加什么过滤条件</li>
+</ul>
+<li>这是 AI 很难自己稳定猜对的。</li>
+</ul>
+<p>这次订单分析里最典型的例子就是：</p>
+<ul>
+<li><code>dm_order_cl_info_df</code> 查询必须限定 <code>user_order_active_country</code></li>
+<li>这是关键路由知识，不是 SQL 技巧</li>
+</ul>
+<h3 id="4-不要盲信单一系统-要做交叉验证">4. 不要盲信单一系统，要做交叉验证</h3>
+<ul>
+<li>文章里通过 Pearl、ByteHi、Lark、Eagle Eye 多系统交叉比对来避免误判。</li>
+<li>核心思想是：任何一个系统都可能只展示“表面现象”，需要多数据源交叉验证。</li>
+</ul>
+<p>迁移到订单分析里就是：</p>
+<ul>
+<li>CCR 宽表看到的是用户体验标签</li>
+<li>包裹宽表看到的是履约事实</li>
+<li>订单宽表看到的是交易/主单状态</li>
+<li>真正根因要靠三者一起看</li>
+</ul>
+<h3 id="5-先分清-症状-和-根因">5. 先分清“症状”和“根因”</h3>
+<ul>
+<li>文章最强的一点，是不满足于表面描述，而是不断往下挖真实原因。</li>
+<li>很多 case 的外在表现和最终根因并不是一回事。</li>
+</ul>
+<p>迁移到订单分析里：</p>
+<ul>
+<li><code>SlowDeliveryTimeliness</code> 是症状</li>
+<li><code>PACKAGE_LOST</code> 才是物流事实根因</li>
+</ul>
+<h3 id="6-每轮都要固化">6. 每轮都要固化</h3>
+<ul>
+<li>每做完一轮，就把学到的东西固化成：</li>
+<ul>
+<li>code</li>
+<li>skill</li>
+<li>reference</li>
+<li>failure signature</li>
+</ul>
+<li>不固化，下次就得从头踩坑。</li>
+</ul>
+<p>迁移到订单分析里：</p>
+<ul>
+<li>可以把这次学到的查询套路沉淀为“CCR case analysis 模板”：</li>
+<ul>
+<li>先查分区</li>
+<li>再查命中</li>
+<li>再串 <code>CCR -&gt; order -&gt; package</code></li>
+<li>再区分症状与根因</li>
+</ul>
+</ul>
+<h3 id="7-最终交付要能证明价值">7. 最终交付要能证明价值</h3>
+<ul>
+<li>文章强调：不要只说“我分析了”，而要证明“比旧方法更好”。</li>
+<li>对订单 case 来说，价值不是把字段抄一遍，而是：</li>
+<ul>
+<li>把表面标签和后台事实区分开</li>
+<li>明确真正责任侧</li>
+<li>解释为什么 CCR 这么打标</li>
+</ul>
+</ul>
+<hr>
+<h2 id="二-把方法论映射到这次订单分析">二、把方法论映射到这次订单分析</h2>
+<p>这次分析采用了下面的流程：</p>
+<ol>
+<li>先确认三张表的分区字段</li>
+<li>只用最新分区查询，避免混入历史快照</li>
+<li>先确认订单在各表是否命中</li>
+<li>发现订单宽表需要 <code>user_order_active_country</code> 过滤后，再反查真实国家</li>
+<li>用 <code>CCR 宽表 + 包裹宽表 + 订单宽表</code> 交叉验证</li>
+<li>把“用户感知的 CCR 症状”和“履约事实根因”分开写</li>
+</ol>
+<p>这正好对应了文章里的：</p>
+<ul>
+<li>最小闭环</li>
+<li>reality-feedback loop</li>
+<li>domain routing</li>
+<li>多系统交叉验证</li>
+<li>症状 vs 根因拆分</li>
+</ul>
+<hr>
+<h2 id="三-订单-583235230444586009-分析">三、订单 583235230444586009 分析</h2>
+<h2 id="1-查询口径">1. 查询口径</h2>
+<p>本次查询全部限定在各表最新分区：</p>
+<ul>
+<li><code>ecom.dm_gvn_order_ccr_metric_df_global</code></li>
+<ul>
+<li>最新分区：<code>date=&#x27;20260425&#x27;</code></li>
+</ul>
+<li><code>ecom.dm_lgt_package_detail_day</code></li>
+<ul>
+<li>最新分区：<code>date=&#x27;20260426&#x27;</code></li>
+</ul>
+<li><code>ecom.dm_order_cl_info_df</code></li>
+<ul>
+<li>最新分区：<code>date=&#x27;20260426&#x27;</code></li>
+<li>且必须限定 <code>user_order_active_country</code></li>
+</ul>
+</ul>
+<p>补充说明：</p>
+<ul>
+<li>一开始以为这单要限定 <code>id</code></li>
+<li>但在订单宽表最新分区里反查后，实际命中的国家是 <code>TH</code></li>
+<li>所以后续订单宽表查询使用：</li>
+<ul>
+<li><code>date=&#x27;20260426&#x27;</code></li>
+<li><code>user_order_active_country=&#x27;TH&#x27;</code></li>
+</ul>
+</ul>
+<h2 id="2-订单基础信息">2. 订单基础信息</h2>
+<ul>
+<li><code>main_order_id</code>: <code>583235230444586009</code></li>
+<li><code>package_id</code>: <code>3190885789974692889</code></li>
+<li><code>tracking_no</code>: <code>793837579021</code></li>
+<li><code>user_order_active_country</code>: <code>TH</code></li>
+<li><code>order_shop_name</code>: <code>HCD</code></li>
+<li><code>seller_id</code>: <code>7494652722551949885</code></li>
+<li><code>delivery_type</code>:</li>
+<ul>
+<li>订单宽表：<code>4PL</code></li>
+<li>包裹宽表：<code>1</code></li>
+</ul>
+<li><code>is_mall_order</code>: <code>0</code></li>
+</ul>
+<p>订单宽表显示这个主单下有 2 条 <code>order_line_id</code>：</p>
+<ul>
+<li><code>583235230444717081</code></li>
+<li><code>583235230444651545</code></li>
+</ul>
+<p>但共用同一个 <code>package_id = 3190885789974692889</code>，说明这是一个多 order line 合包场景。</p>
+<h2 id="3-ccr-侧看到的现象">3. CCR 侧看到的现象</h2>
+<p>在 CCR 宽表最新分区中，这条单命中到的核心标签是：</p>
+<ul>
+<li><code>ccr_label_v1 = LogisticsIssue</code></li>
+<li><code>ccr_label_v2 = LogisticsDelivery</code></li>
+<li><code>ccr_label_v3 = DeliveryProgress</code></li>
+<li><code>ccr_label_v4 = SlowDeliveryTimeliness</code></li>
+<li><code>ccr_label_group = Slow Timeliness and Delivery</code></li>
+<li><code>ccr_label_group_grand = Fulfillment and Logistics</code></li>
+</ul>
+<p>关键时间：</p>
+<ul>
+<li><code>event_time_date = 2026-04-01</code></li>
+<li><code>event_time_ts = 1775022183</code></li>
+<li>UTC 时间约为：<code>2026-04-01 05:43:03</code></li>
+</ul>
+<p>这说明在 CCR 视角下，用户或系统首先感知到的问题是：</p>
+<ul>
+<li>物流问题</li>
+<li>配送进度异常</li>
+<li>时效慢</li>
+</ul>
+<p>也就是说，这一层展示的是用户体验层的“症状”。</p>
+<h2 id="4-物流包裹侧看到的事实">4. 物流包裹侧看到的事实</h2>
+<p>在包裹宽表最新分区中，这个包裹的状态已经明确为：</p>
+<ul>
+<li><code>fulfill_status = 105</code></li>
+<li><code>fulfill_status_name = PACKAGE_LOST</code></li>
+<li><code>package_status_l1_name = package_lost</code></li>
+<li><code>package_status_l2_name = package_lost_sub</code></li>
+<li><code>final_pkg_status = 1001</code></li>
+</ul>
+<p>其他关键信息：</p>
+<ul>
+<li><code>shipment_type_name = LOCAL</code></li>
+<li><code>delivery_option_name = STANDARD</code></li>
+<li><code>package_lost_provider_name = J&amp;T Express</code></li>
+<li><code>package_lost_provider_id = 6841743441349706241</code></li>
+<li><code>package_lost_source_type = 2</code></li>
+</ul>
+<p>时间信息：</p>
+<ul>
+<li><code>package_lost_back_ts = 1775241840</code></li>
+<ul>
+<li>UTC 约为：<code>2026-04-03 18:44:00</code></li>
+</ul>
+<li><code>status_update_ts = 1775241837</code></li>
+<ul>
+<li>UTC 约为：<code>2026-04-03 18:43:57</code></li>
+</ul>
+</ul>
+<p>异常原因字段为空：</p>
+<ul>
+<li><code>latest_delivery_exception_reason_code = NULL</code></li>
+<li><code>latest_delivery_exception_reason_msg = NULL</code></li>
+<li><code>delivery_exception_reason = NULL</code></li>
+<li><code>delivery_failed_reason = NULL</code></li>
+</ul>
+<p>这说明在物流事实层面，这单已经不是“只是慢”，而是：</p>
+<ul>
+<li>包裹最终被认定为丢失</li>
+<li>且丢失落在本地承运链路</li>
+</ul>
+<h2 id="5-订单宽表状态补充">5. 订单宽表状态补充</h2>
+<p>订单宽表在最新分区、且限定 <code>user_order_active_country=&#x27;TH&#x27;</code> 后查到了这单。</p>
+<p>关键字段：</p>
+<ul>
+<li><code>payment_status_code = 1</code></li>
+<li><code>delivery_status_code = 105</code></li>
+<li><code>reverse_status_code = 2</code></li>
+<li><code>main_status_v2_code = 1000</code></li>
+<li><code>main_main_status_v2_code = 1000</code></li>
+<li><code>main_fulfill_status_code = 105</code></li>
+<li><code>sub_fulfill_status_code = 105</code></li>
+</ul>
+<p>这里最关键的是：</p>
+<ul>
+<li>订单侧履约状态与包裹侧 <code>PACKAGE_LOST</code> 是一致的</li>
+<li>说明物流丢失已经传导到订单履约状态</li>
+</ul>
+<h2 id="6-时间线还原">6. 时间线还原</h2>
+<p>按当前三张表能还原出的时间线如下：</p>
+<h3 id="阶段-1-用户侧先感知-慢">阶段 1：用户侧先感知“慢”</h3>
+<ul>
+<li>时间：<code>2026-04-01</code></li>
+<li>证据：CCR 宽表</li>
+<li>表现：</li>
+<ul>
+<li><code>SlowDeliveryTimeliness</code></li>
+<li><code>DeliveryProgress</code></li>
+</ul>
+</ul>
+<p>这说明订单在当时对用户而言，首先体现为“迟迟未送达”。</p>
+<h3 id="阶段-2-物流事实落成-丢件">阶段 2：物流事实落成“丢件”</h3>
+<ul>
+<li>时间：<code>2026-04-03</code></li>
+<li>证据：包裹宽表</li>
+<li>表现：</li>
+<ul>
+<li><code>PACKAGE_LOST</code></li>
+<li><code>package_lost</code></li>
+<li><code>J&amp;T Express</code></li>
+</ul>
+</ul>
+<p>说明问题后续恶化或最终被确认成：</p>
+<ul>
+<li>包裹丢失</li>
+</ul>
+<h3 id="阶段-3-订单履约状态和包裹状态对齐">阶段 3：订单履约状态和包裹状态对齐</h3>
+<ul>
+<li>时间：最新订单分区快照 <code>20260426</code></li>
+<li>证据：订单宽表</li>
+<li>表现：</li>
+<ul>
+<li><code>delivery_status_code = 105</code></li>
+<li><code>main_fulfill_status_code = 105</code></li>
+</ul>
+</ul>
+<p>说明订单侧已经同步了包裹丢失这一事实。</p>
+<h2 id="7-这单到底发生了什么">7. 这单到底发生了什么</h2>
+<p>如果把三张表的信息合起来，这单的故事是：</p>
+<ul>
+<li>用户先感知到的是物流慢、迟迟未收到货</li>
+<li>CCR 因此打上了 <code>SlowDeliveryTimeliness</code></li>
+<li>但后台物流链路的最终事实不是普通延迟，而是包裹被标记成了 <code>PACKAGE_LOST</code></li>
+<li>丢失发生在本地物流承运侧，承运商是 <code>J&amp;T Express</code></li>
+</ul>
+<p>所以：</p>
+<ul>
+<li><code>SlowDeliveryTimeliness</code> 是前台症状</li>
+<li><code>PACKAGE_LOST</code> 是后台根因事实</li>
+</ul>
+<h2 id="8-根因判断">8. 根因判断</h2>
+<h3 id="表面问题">表面问题</h3>
+<ul>
+<li>物流进度慢</li>
+<li>用户在预期时效内未收到货</li>
+</ul>
+<h3 id="真实根因">真实根因</h3>
+<ul>
+<li>包裹在本地物流链路中丢失</li>
+</ul>
+<h3 id="根因归属">根因归属</h3>
+<ul>
+<li>履约链路问题</li>
+<li>更偏向本地承运商 / last-mile 链路问题</li>
+<li>高概率责任侧：<code>J&amp;T Express</code></li>
+</ul>
+<h2 id="9-为什么-ccr-不是-package-lost">9. 为什么 CCR 不是 “Package Lost”</h2>
+<p>这并不矛盾，反而是很常见的现象：</p>
+<ul>
+<li>CCR 标签记录的是用户体验层的投诉/感知</li>
+<li>用户最先感知到的是“太慢了”</li>
+<li>物流系统后续才把问题落成“丢件”</li>
+</ul>
+<p>因此：</p>
+<ul>
+<li>CCR 宽表反映的是“前台用户视角”</li>
+<li>包裹宽表反映的是“后台物流事实”</li>
+</ul>
+<p>这类 case 分析时，不能只看 CCR 标签本身，否则会低估问题严重度。</p>
+<h2 id="10-最终结论">10. 最终结论</h2>
+<p>这条订单的 CCR 问题，可以总结为：</p>
+<ul>
+<li><strong>CCR 表面标签</strong>：<code>SlowDeliveryTimeliness</code></li>
+<li><strong>问题域</strong>：<code>Fulfillment and Logistics</code></li>
+<li><strong>真实履约结果</strong>：<code>PACKAGE_LOST</code></li>
+<li><strong>核心根因</strong>：包裹在本地物流链路中丢失</li>
+<li><strong>高概率责任侧</strong>：<code>J&amp;T Express</code></li>
+</ul>
+<p>一句话总结：</p>
+<blockquote>
+<p>这单表面上是“配送慢”，但结合包裹和订单侧最新事实看，真正根因是本地承运商链路上的丢件，<code>SlowDeliveryTimeliness</code> 只是用户最先感知到的症状。</p>
+</blockquote>
+<hr>
+<h2 id="四-从这次-case-能沉淀出的通用分析模板">四、从这次 case 能沉淀出的通用分析模板</h2>
+<p>以后分析订单 CCR，建议固定按这个顺序：</p>
+<ol>
+<li>先确认每张表的最新分区</li>
+<li>对有限制的表先补齐必要过滤条件</li>
+<li>先查是否命中，再查明细</li>
+<li>先找 <code>CCR 标签</code></li>
+<li>再找 <code>物流最终状态</code></li>
+<li>最后用 <code>订单状态</code> 验证是否同步</li>
+<li>输出时必须拆开：</li>
+</ol>
+<ul>
+<li>症状</li>
+<li>事实</li>
+<li>根因</li>
+<li>责任侧</li>
+</ul>
+<p>这样能避免：</p>
+<ul>
+<li>只看 CCR 标签就下结论</li>
+<li>把“慢”误当成最终根因</li>
+<li>忽略包裹状态已经升级成更严重的问题</li>
+</ul>
+<hr>
+<h2 id="五-下一步建议">五、下一步建议</h2>
+<p>如果要继续把这套方法变成稳定流程，建议再做两件事：</p>
+<ol>
+<li>把“CCR case 分析模板”沉淀成固定 Markdown 结构</li>
+</ol>
+<ul>
+<li>基础信息</li>
+<li>CCR 现象</li>
+<li>订单状态</li>
+<li>包裹状态</li>
+<li>时间线</li>
+<li>根因判断</li>
+<li>一句话结论</li>
+</ul>
+<ol>
+<li>再补一个“履约异常根因映射表”</li>
+</ol>
+<ul>
+<li><code>SlowDeliveryTimeliness -&gt; 可能是慢，也可能最终演化为 lost/damaged/cancelled</code></li>
+<li><code>DeliveryProgress -&gt; 要结合 package 状态判断</code></li>
+<li><code>PACKAGE_LOST / PACKAGE_DAMAGED / DELIVERY_FAILED</code> 这类字段作为后验根因证据</li>
+</ul>
+    </main>
+  </div>
+</body>
+</html>
